@@ -1,24 +1,7 @@
 import json
 import sys
-from collections import MutableMapping
 
 import rg
-
-class AttrDict(MutableMapping):
-    def __init__(self, *args, **kwargs):
-        self.__dict__.update(*args, **kwargs)
-    def __getitem__(self, key):
-        return self.__getattribute__(key)
-    def __setitem__(self, key, val):
-        self.__setattr__(key, val)
-    def __delitem__(self, key):
-        self.__delattr__(key)
-    def __iter__(self):
-        return iter(self.__dict__)
-    def __repr__(self):
-        return repr(self.__dict__)
-    def __len__(self):
-        return len(self.__dict__)
 
 def recv():
     return json.loads(input())
@@ -45,7 +28,7 @@ def runrobot(factory):
         "height": height,
         })
 
-    rg.set_settings(AttrDict(settings))
+    rg.set_settings(settings)
 
     
     rg.CENTER_POINT = (int(width / 2), int(height / 2))
@@ -56,12 +39,12 @@ def runrobot(factory):
         robots = {}
         for bot in world['robots']:
             bot['location'] = tuple(bot['location'])
-            robots[tuple(bot['location'])] = AttrDict(bot)
+            robots[tuple(bot['location'])] = rg.AttrDict(bot)
         world['robots'] = robots
         
         for attr, val in world['local'].items():
             setattr(r, attr, val)
         r.location = tuple(r.location)
         
-        result = r.act(AttrDict(world))
+        result = r.act(rg.AttrDict(world))
         send(result)
