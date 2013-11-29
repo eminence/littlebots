@@ -1,5 +1,6 @@
 # users will import rg to be able to use robot game functions
 from math import sqrt
+from collections import MutableMapping
 
 settings = None
 
@@ -7,8 +8,25 @@ settings = None
 
 CENTER_POINT = None
 
+class AttrDict(MutableMapping):
+    def __init__(self, *args, **kwargs):
+        self.__dict__.update(*args, **kwargs)
+    def __getitem__(self, key):
+        return self.__getattribute__(key)
+    def __setitem__(self, key, val):
+        self.__setattr__(key, val)
+    def __delitem__(self, key):
+        self.__delattr__(key)
+    def __iter__(self):
+        return iter(self.__dict__)
+    def __repr__(self):
+        return repr(self.__dict__)
+    def __len__(self):
+        return len(self.__dict__)
+
 
 def set_settings(s):
+    "s must be an AttrDict"
     global settings
     settings = s
 
